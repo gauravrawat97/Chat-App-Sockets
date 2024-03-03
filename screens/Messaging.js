@@ -11,18 +11,24 @@ const Messaging = ({ route, navigation }) => {
   const [user, setUser] = useState("");
   //👇🏻 Access the chatroom's name and id
 
-  const { name, id } = route.params;
   useLayoutEffect(() => {
-    navigation.setOptions({ title: name });
+    navigation.setOptions({ title: "Group Chat" });
     getUsername();
-    socket.emit("findRoom", id);
-    socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
+    // socket.emit("findRoom", id);
+    // socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
+    function fetchGroups() {
+      fetch("http://localhost:4000/api")
+        .then((res) => res.json())
+        .then((data) => setChatMessages(data))
+        .catch((err) => console.error(err));
+    }
+    fetchGroups();
   }, []);
-
   //👇🏻 This runs when the messages are updated.
   useEffect(() => {
-    console.log("got new msg seen!");
-    socket.on("foundRoom", (roomChats) => setChatMessages(roomChats));
+    socket.on("roomMessage", (roomMessage) => {
+      setChatMessages(roomMessage);
+    });
   }, [socket]);
 
   //👇🏻 This function gets the username saved on AsyncStorage
@@ -55,10 +61,10 @@ const Messaging = ({ route, navigation }) => {
 
     socket.emit("newMessage", {
       message,
-      room_id: id,
       user,
       timestamp: { hour, mins },
     });
+    setMessage("");
   };
 
   return (
@@ -69,7 +75,7 @@ const Messaging = ({ route, navigation }) => {
           { paddingVertical: 15, paddingHorizontal: 10 },
         ]}
       >
-        {chatMessages[0] ? (
+        {chatMessages?.length ? (
           <FlatList
             data={chatMessages}
             renderItem={({ item }) => (
@@ -86,6 +92,7 @@ const Messaging = ({ route, navigation }) => {
         <TextInput
           style={styles.messaginginput}
           onChangeText={(value) => setMessage(value)}
+          value={message}
         />
         <Pressable
           style={styles.messagingbuttonContainer}

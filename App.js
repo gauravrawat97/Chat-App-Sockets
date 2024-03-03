@@ -3,7 +3,6 @@ import React from "react";
 //👇🏻 app screens
 import Login from "./screens/Login";
 import Messaging from "./screens/Messaging";
-import Chat from "./screens/Chat";
 
 //👇🏻 React Navigation configurations
 import { NavigationContainer } from "@react-navigation/native";
@@ -21,14 +20,6 @@ export default function App() {
           options={{ headerShown: false }}
         />
 
-        <Stack.Screen
-          name="Chat"
-          component={Chat}
-          options={{
-            title: "Chats",
-            headerShown: false,
-          }}
-        />
         <Stack.Screen name="Messaging" component={Messaging} />
       </Stack.Navigator>
     </NavigationContainer>

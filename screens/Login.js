@@ -20,7 +20,7 @@ const Login = ({ navigation }) => {
       //👇🏻 async function - saves the username to AsyncStorage
       //   redirecting to the Chat page
       await AsyncStorage.setItem("username", username);
-      navigation.navigate("Chat");
+      navigation.navigate("Messaging");
     } catch (e) {
       Alert.alert("Error! While saving username");
     }
